@@ -1,0 +1,20 @@
+protobuf = "*"
+serde = "*"
+serde_json = "*"
+serde_derive = "*"
+failure = "*"
+
+[build-dependencies]
+protobuf = "*"
+failure = "0.1.2"
+protobuf-codegen-pure = "2.1.1"
+protobuf-codegen = "2.1.1"
+ipfs-api = "0.5.0-alpha2"
+hyper = "0.12.11"
+
+[features]
+with-serde = ["protobuf/with-serde"]
+default = ["with-serde"]
+
+[lib]
+crate-type = ["dylib"]

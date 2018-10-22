@@ -1,0 +1,8 @@
+[package]
+name = "cargo-createprotocolplugin"
+version = "0.1.0"
+authors = ["James Prince <34577138+zutils@users.noreply.github.com>"]
+
+[dependencies]
+clap = "2.32.0"
+failure = "0.1.2"
