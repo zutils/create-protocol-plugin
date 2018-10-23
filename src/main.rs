@@ -1,12 +1,12 @@
-//! A Rust cargo subcommand that will create initial code for the protocol-handler crate. 
+//! A Rust cargo subcommand that will create initial code for the protocols crate. 
 //!
 //! # Installation
 //!
-//! cargo install create-protocol-plugin
+//! cargo install create-protocols-plugin
 //!
 //! # Usage
 //!
-//! cargo create-protocol-plugin <Crate Name> --protocol <.proto File>
+//! cargo create-protocols-plugin <Crate Name> --protocol <.proto File>
 
 #[macro_use] extern crate failure;
 extern crate clap;
@@ -22,8 +22,8 @@ fn handle_application_input() -> ArgMatches<'static> {
         .version("1.0")
         .bin_name("cargo")
         .author("James Prince <james.h.prince@gmail.com>")
-        .about("Creates a default dynamic library compatible with the protocol-handler crate.")
-        .subcommand(SubCommand::with_name("createprotocolplugin")
+        .about("Creates a default dynamic library compatible with the protocols crate.")
+        .subcommand(SubCommand::with_name("create-protocols-plugin")
             .arg(Arg::with_name("cratename")
                 .value_name("Crate Name")
                 .takes_value(true)
@@ -53,7 +53,7 @@ fn handle_application_input() -> ArgMatches<'static> {
 
 fn main() -> Result<(), Error> {
     let root_matches = handle_application_input();
-    let matches = root_matches.subcommand_matches("create-protocol-plugin").ok_or(format_err!("No subcommand found!"))?;
+    let matches = root_matches.subcommand_matches("create-protocols-plugin").ok_or(format_err!("No subcommand found!"))?;
     let crate_name = matches.value_of("cratename").ok_or(format_err!("No crate name found!"))?;
     let protocol_filename = matches.value_of("protocol").ok_or(format_err!("No protocol file found!"))?;
 

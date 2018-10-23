@@ -77,7 +77,7 @@ impl ProtocolBufferCrate {
         uppercase_first_letter(&self.basename)
     }
 
-    pub fn parse_and_verify_schema_path(&mut self) -> Result<(), Error> {
+    fn parse_and_verify_schema_path(&mut self) -> Result<(), Error> {
         let filename = self.schema_path.file_name().ok_or(format_err!("Cannot parse filename!"))?;
         let filename = filename.to_str().ok_or(format_err!("Cannot convert osStr to str."))?;
         let basename = self.schema_path.file_stem().ok_or(format_err!("Cannot find file!"))?;
