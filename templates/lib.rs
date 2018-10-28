@@ -23,7 +23,8 @@ pub extern fn handle(data: &[u8]) -> Result<(), Error> {
 }
 
 #[no_mangle]
-pub extern fn get_default_message() -> Result<String, Error> {
+pub extern fn generate_message(template_name: &str) -> Result<String, Error> {
+    // For now, just generate a default message
     let structure = TargetStructure::new();
     Ok(serde_json::to_string(&structure)?)
 }
