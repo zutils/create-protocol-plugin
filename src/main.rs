@@ -1,12 +1,19 @@
 //! A Rust cargo subcommand that will create initial code for the protocols crate. 
-//!
-//! # Installation
-//!
+//! 
+//! ## Installation
 //! cargo install create-protocols-plugin
-//!
-//! # Usage
-//!
-//! cargo create-protocols-plugin <Crate Name> --protocol <.proto File>
+//! 
+//! ## Usage
+//! cargo create-protocols-plugin <Crate Name> <.proto File>
+//! 
+//! # What does it do?
+//! This crate will create you a crate with default functions to get started using the protocols library.
+//! 
+//! # Future Work
+//! Build a library based on a Cap'n Proto schema.
+//! Build a library based on flatbuffer schema.
+//! 
+
 
 #[macro_use] extern crate failure;
 extern crate clap;
@@ -42,8 +49,6 @@ fn handle_application_input() -> ArgMatches<'static> {
                 .required_unless("static")
                 .takes_value(false))*/
             .arg(Arg::with_name("protocol")
-                .short("p")
-                .long("protocol")
                 .value_name(".proto File")
                 .help(r#"Add a .proto file."#)
                 .takes_value(true)
