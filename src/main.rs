@@ -15,13 +15,13 @@
 //! 
 
 
-#[macro_use] extern crate failure;
+extern crate failure;
 extern crate clap;
 
 pub mod createcrate;
 
 use createcrate::{ProtocolBufferCrate};
-use failure::Error;
+use failure::{Error, format_err};
 use clap::{Arg, App, SubCommand, ArgMatches};
 
 fn handle_application_input() -> ArgMatches<'static> {

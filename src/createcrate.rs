@@ -1,5 +1,8 @@
-use failure::Error;
+extern crate failure;
+
 use std::path::PathBuf;
+
+use failure::{Error, format_err};
 
 fn append_to_file(new_file: &PathBuf, contents: &str) -> Result<(), Error> {
     use std::fs::OpenOptions;
