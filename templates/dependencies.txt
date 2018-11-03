@@ -3,15 +3,10 @@ serde = "*"
 serde_json = "*"
 serde_derive = "*"
 failure = "*"
-protobuf-codegen-pure = "2.1.1"
-protobuf-codegen = "2.1.1"
-ipfs-api = "0.5.0-alpha2"
-hyper = "0.12.11"
-toml = "*"
-toml-query = "0.7.0"
-
+protocols = { path = "../../../protocols" }
+ 
 [build-dependencies]
-protocols = "*"
+protocols = { path = "../../../protocols" }
 failure = "0.1.2"
 
 [features]
