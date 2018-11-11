@@ -1,51 +1,43 @@
 #[macro_use] extern crate serde_derive;
-extern crate protobuf;
-extern crate serde_json;
-extern crate serde;
+extern crate lazy_static;
 extern crate failure;
 extern crate protocols;
+extern crate protobuf;
 
-pub mod __PROTOCOLBUFFERNAME__;
-use __PROTOCOLBUFFERNAME__::__PROTOCOLBUFFERSTRUCT__;
-use failure::Error;
-use protocols::pluginhandler::MessageInfo;
+use failure::{Error, format_err};
+use protocols::pluginhandler::{MessageInfo, SubLibrary};
+use lazy_static::lazy_static;
+use std::collections::HashMap;
 
-#[no_mangle]
-pub extern fn get_name() -> String {
-    return "__PROTOCOLBUFFERSTRUCT__".to_string();
+// __PUBMODPROTOCOLS__ Do not remove this line. This line is used to add new protocols.
+
+type SubLibraryKeyValue = Box<SubLibrary+Sync>;
+
+lazy_static! {
+    static ref SUBLIBRARIES: HashMap<String, SubLibraryKeyValue> = {
+        let mut m: HashMap<String, SubLibraryKeyValue> = HashMap::new();
+        // __REGISTERINTERFACES__ Do not remove this line. This line is used to add new protocols.
+        m
+    };
 }
 
 #[no_mangle]
-pub extern fn handle(info: &MessageInfo) -> Result<Vec<MessageInfo>, Error> {
-    let string: String = info.data.iter().map(|u: &u8| *u as char).collect();
-    println!("Handling: {:?}", string);
-    let structure: __PROTOCOLBUFFERSTRUCT__ = serde_json::from_str(&string)?;
-    println!("Received message: {:?}", structure);
-
-    Ok(())
-}
-
-// This may represent a problem if root-message recurses from itself.
-fn handle_submessages(manager: &PluginManager, schema_url: &str, data: &[u8]) -> Result<(), Error> {
-    manager.handle_msg_and_submsgs(schema_url, data);
+/// Pass function through to hashmap
+pub extern fn get_name(schema_url: &str) -> Result<String, Error> {
+    let library = SUBLIBRARIES.get(schema_url).ok_or(format_err!("{} does not exist in this library!", schema_url))?;
+    Ok(library.get_name())
 }
 
 #[no_mangle]
-pub extern fn generate_message(template_name: &str) -> Result<String, Error> {
-    // For now, just generate a default message
-    let structure = __PROTOCOLBUFFERSTRUCT__::new();
-    Ok(serde_json::to_string(&structure)?)
+/// Pass function through to hashmap
+pub extern fn handle(info: MessageInfo) -> Result<Vec<MessageInfo>, Error> {
+    println!("Handling {} message in library.", info.schema_url);
+    let library = SUBLIBRARIES.get(&info.schema_url).ok_or(format_err!("{} does not exist in this library!", info.schema_url))?;
+    library.handle(info)
 }
 
 #[no_mangle]
-pub extern fn get_schema_url() -> String{
-    return include_str!("../schema_url.txt").to_string();
-}
-
-// TODO: This should be replaced with a way to query the RPC.
-#[no_mangle]
-pub extern fn get_non_standard_library_interface_functions() -> Vec<String> {
-    let ret = Vec::new();
-    //ret.push("non_standard_function");
-    ret
+/// Return list of all schema urls
+pub extern fn get_schema_urls() -> Result<Vec<String>, Error> {
+    Ok(SUBLIBRARIES.keys().map(|s| s.clone()).collect::<Vec<_>>())
 }

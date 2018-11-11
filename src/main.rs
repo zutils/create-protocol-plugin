@@ -4,7 +4,7 @@
 //! cargo install create-protocols-plugin
 //! 
 //! ## Usage
-//! cargo create-protocols-plugin <Crate Name> <.proto File>
+//! cargo create-protocols-plugin <Crate Name> <Protocol name>
 //! 
 //! # What does it do?
 //! This crate will create you a crate with default functions to get started using the protocols library.
@@ -14,15 +14,27 @@
 //! Build a library based on flatbuffer schema.
 //! 
 
-
 extern crate failure;
 extern crate clap;
 
+pub mod utils;
 pub mod createcrate;
+pub mod addprotocol;
 
-use createcrate::{ProtocolBufferCrate};
 use failure::{Error, format_err};
 use clap::{Arg, App, SubCommand, ArgMatches};
+
+fn main() -> Result<(), Error> {
+    let root_matches = handle_application_input();
+    let matches = root_matches.subcommand_matches("create-protocols-plugin").ok_or(format_err!("No subcommand found!"))?;
+    let crate_name = matches.value_of("cratename").ok_or(format_err!("No crate name found!"))?;
+    let protocol_name = matches.value_of("protocolname").ok_or(format_err!("No protocol file found!"))?;
+
+    verify_or_create_existence_of_crate(crate_name)?;
+    verify_or_create_existence_of_protocol(crate_name, protocol_name)?;
+
+    Ok(())
+}
 
 fn handle_application_input() -> ArgMatches<'static> {
     App::new("Create Protocol Plugin Cargo Subcommand")
@@ -35,35 +47,31 @@ fn handle_application_input() -> ArgMatches<'static> {
                 .value_name("Crate Name")
                 .takes_value(true)
                 .required(true))
-            // Commented - for now, we just create dynamic (dll) crates.
-            /*.arg(Arg::with_name("static")
-                .short("s")
-                .long("static")
-                .help(r#"Creates a static library crate. Include in [dependencies]."#)
-                .takes_value(false)
-                .required_unless("dynamic"))
-            .arg(Arg::with_name("dynamic")
-                .short("d")
-                .long("dynamic")
-                .help(r#"Creates a dynamic library crate. Include in the plugins directory."#)
-                .required_unless("static")
-                .takes_value(false))*/
-            .arg(Arg::with_name("protocol")
-                .value_name(".proto File")
-                .help(r#"Add a .proto file."#)
+            .arg(Arg::with_name("protocolname")
+                .value_name("Protocol Name")
                 .takes_value(true)
                 .required(true)))
         .get_matches()
 }
 
-fn main() -> Result<(), Error> {
-    let root_matches = handle_application_input();
-    let matches = root_matches.subcommand_matches("create-protocols-plugin").ok_or(format_err!("No subcommand found!"))?;
-    let crate_name = matches.value_of("cratename").ok_or(format_err!("No crate name found!"))?;
-    let protocol_filename = matches.value_of("protocol").ok_or(format_err!("No protocol file found!"))?;
+fn verify_or_create_existence_of_crate(crate_name: &str) -> Result<(), Error> {
+    use createcrate::ProtocolBufferCrate;
+    use std::path::PathBuf;
 
-    let mut crate_builder = ProtocolBufferCrate::new(crate_name, protocol_filename);
-    crate_builder.create()?;
+    let crate_path = PathBuf::from(format!("./{}", crate_name));
+    if !crate_path.is_dir() {
+        let mut crate_builder = ProtocolBufferCrate::new(crate_name);
+        crate_builder.create()?;
+    }
+    Ok(())
+}
 
+fn verify_or_create_existence_of_protocol(crate_name: &str, protocol_name: &str) -> Result<(), Error> {
+    use addprotocol::ProtocolBufferSchema;
+
+    let mut protocol_builder = ProtocolBufferSchema::new(crate_name, protocol_name);
+    if !protocol_builder.protocol_filepath().exists() {
+        protocol_builder.create()?;
+    }
     Ok(())
 }

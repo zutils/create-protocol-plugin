@@ -3,6 +3,7 @@ serde = "*"
 serde_json = "*"
 serde_derive = "*"
 failure = "*"
+lazy_static = "*"
 protocols = { path = "../../../protocols" }
  
 [build-dependencies]
