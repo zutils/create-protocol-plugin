@@ -41,3 +41,9 @@ pub extern fn handle(info: MessageInfo) -> Result<Vec<MessageInfo>, Error> {
 pub extern fn get_schema_urls() -> Result<Vec<String>, Error> {
     Ok(SUBLIBRARIES.keys().map(|s| s.clone()).collect::<Vec<_>>())
 }
+
+#[no_mangle]
+/// Return version of the FFI
+pub extern fn get_ffi_version() -> Result<String, Error> {
+    "0.0.1".to_string() // Update this whenever ffi is changed.
+}
