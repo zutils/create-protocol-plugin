@@ -1,18 +1,11 @@
 protobuf = "*"
-serde = "*"
-serde_json = "*"
-serde_derive = "*"
 failure = "*"
 lazy_static = "*"
 protocols = { path = "../../../protocols" }
  
 [build-dependencies]
 protocols = { path = "../../../protocols" }
-failure = "0.1.2"
-
-[features]
-with-serde = ["protobuf/with-serde"]
-default = ["with-serde"]
+failure = "*"
 
 [lib]
 crate-type = ["dylib"]

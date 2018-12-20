@@ -113,7 +113,7 @@ impl ProtocolBufferCrate {
 
     fn cargo_toml_filepath(&self) -> PathBuf {
         let mut path = self.crate_directory();
-        path.push("cargo.toml");
+        path.push("Cargo.toml");
         path
     }
 }

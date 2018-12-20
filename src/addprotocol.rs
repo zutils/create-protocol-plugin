@@ -36,13 +36,13 @@ impl ProtocolBufferSchema {
     }
 
     fn get_pub_mod_protocol_replacement_string(&self) -> String {
-        format!("pub mod {IFACE};\npub mod {IFACE}_interface;\n// __PUBMODPROTOCOLS__", IFACE = self.protocol_name)
+        format!("pub mod {IFACE}_autogen;\npub mod {IFACE}_interface;\n// __PUBMODPROTOCOLS__", IFACE = self.protocol_name)
     }
 
     fn get_interface_string(&self) -> String { 
-        // m.insert(test_interface::TestInterface::get_schema_url(), Box::new(test_interface::TestInterface{}));
-        let interface_str = format!("{}_interface::{}Interface", self.protocol_name, utils::uppercase_first_letter(&self.protocol_name));
-        let interface_str = format!("m.insert({IFACE}::get_schema_url(), Box::new({IFACE}{{}}));\n\t\t// __REGISTERINTERFACES__", IFACE = interface_str);
+        // m.add_interface(test_interface::TestInterface{});
+        let interface_str = format!("m.add_interface({}_interface::{}Interface{{}});", self.protocol_name, utils::uppercase_first_letter(&self.protocol_name));
+        let interface_str = format!("{IFACE}\n\t\t// __REGISTERINTERFACES__", IFACE = interface_str);
         interface_str
     }
 
