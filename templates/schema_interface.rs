@@ -7,8 +7,6 @@ static SCHEMA_URL: &str = include_str!("../schema_urls/__PROTOCOL_NAME__.txt");
 
 pub struct __PROTOCOL_STRUCT_NAME__Interface;
 
-impl ToDataConverter for __PROTOCOL_NAME__::__PROTOCOL_STRUCT_NAME__ {}
-
 impl CommonModule for __PROTOCOL_STRUCT_NAME__Interface {
     fn get_info(&self, _: &Destination) -> Result<VecModuleInfo, Error> {
         let mut info = ModuleInfo::new();
@@ -21,7 +19,6 @@ impl CommonModule for __PROTOCOL_STRUCT_NAME__Interface {
     }
 
     fn generate_message(&self, data: &GenerateMessageInfo) -> Result<Data, Error> {
-        use std::str;
         let template = data.get_template();
         let _args = data.get_args();
         match template {
