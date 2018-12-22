@@ -30,7 +30,10 @@ fn main() -> Result<(), Error> {
     let crate_name = matches.value_of("cratename").ok_or(format_err!("No crate name found!"))?;
     let protocol_name = matches.value_of("protocolname").ok_or(format_err!("No protocol file found!"))?;
 
+    println!("Verifying crate...");
     verify_or_create_existence_of_crate(crate_name)?;
+
+    println!("Verifying protocols...");
     verify_or_create_existence_of_protocol(crate_name, protocol_name)?;
 
     Ok(())

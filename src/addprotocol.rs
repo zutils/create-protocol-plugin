@@ -19,8 +19,11 @@ impl ProtocolBufferSchema {
     }
 
     pub fn create(&mut self) -> Result<(), Error> {
+        println!("Creating Schema...");
         self.create_schema()?;
+        println!("Creating Schema interface rs file from template...");
         self.create_schema_interface_rs_from_template()?;
+        println!("Inserting protocol info into lib.rs...");
         self.insert_protocol_info_into_lib_rs()?;
         Ok(())
     }
@@ -84,7 +87,9 @@ impl ProtocolBufferSchema {
         let schema_data = include_str!("../templates/default.proto").to_string();
         let schema_data = schema_data.replace("__SCHEMANAME__", &self.struct_name());
 
-        fs::write(&self.protocol_filepath(), &schema_data)?;
+        let filepath = self.protocol_filepath();
+        println!("Writing to: {:?}", filepath);
+        fs::write(&filepath, &schema_data)?;
 
         Ok(())
     }
